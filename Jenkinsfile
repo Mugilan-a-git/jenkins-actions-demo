@@ -103,8 +103,7 @@ pipeline {
                     )
                 ]) {
                     bat '''
-                        set EP_DRAFT=false
-                        set EP_PRE_RELEASE=false
+                        set GITHUB_ACTIONS=true
                         call npx electron-builder --publish always
                     '''
                 }
