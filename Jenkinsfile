@@ -20,23 +20,6 @@ pipeline {
 
         stage('Create Release Tag') {
             steps {
-                script {
-                    def version = bat(
-                        script: 'call npm pkg get version',
-                        returnStdout: true
-                    ).trim()
-
-                    // npm pkg get version returns something like:
-                    // "2.0.0"
-                    version = version.replaceAll('"', '').trim()
-
-                    env.APP_VERSION = version
-                    env.RELEASE_TAG = "v${version}"
-
-                    echo "Application Version: ${env.APP_VERSION}"
-                    echo "Release Tag: ${env.RELEASE_TAG}"
-                }
-
                 withCredentials([
                     sshUserPrivateKey(
                         credentialsId: 'github-mugilan-ssh',
@@ -44,6 +27,12 @@ pipeline {
                     )
                 ]) {
                     bat '''
+                        for /f "delims=" %%V in ('npm pkg get version') do set "APP_VERSION=%%~V"
+                        set "RELEASE_TAG=v%APP_VERSION%"
+
+                        echo Application Version: %APP_VERSION%
+                        echo Release Tag: %RELEASE_TAG%
+
                         set GIT_SSH_COMMAND=ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no
 
                         git fetch --tags origin
@@ -115,7 +104,7 @@ pipeline {
     post {
         success {
             echo 'CI/CD pipeline completed successfully!'
-            echo "GitHub Release ${env.APP_VERSION} published successfully!"
+            echo 'GitHub Release published successfully!'
         }
 
         failure {
