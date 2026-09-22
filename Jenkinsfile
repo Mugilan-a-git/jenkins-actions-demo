@@ -2,21 +2,21 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_DIR = 'C:\\DataSwitch\\Jenkins\\deployment'
         APP_NAME = 'Jenkins Demo App'
+        DEPLOY_DIR = 'C:\\DataSwitch\\Jenkins\\deployment'
     }
 
     stages {
 
-stage('Build Information') {
-    steps {
-        bat 'call npm pkg get version'
-        echo "Application: ${APP_NAME}"
-        echo "Environment: ${params.ENVIRONMENT}"
-        echo "Jenkins Build Number: ${BUILD_NUMBER}"
-        echo "Git Commit: ${GIT_COMMIT}"
-    }
-}
+        stage('Build Information') {
+            steps {
+                bat 'call npm pkg get version'
+
+                echo "Application: ${APP_NAME}"
+                echo "Jenkins Build Number: ${BUILD_NUMBER}"
+                echo "Git Commit: ${GIT_COMMIT}"
+            }
+        }
 
         stage('Install Dependencies') {
             steps {
@@ -30,24 +30,26 @@ stage('Build Information') {
             }
         }
 
-        stage('Build') {
+        stage('Build React + Electron') {
             steps {
                 bat 'call npm run build'
             }
         }
 
-        stage('Archive Artifact') {
+        stage('Archive Electron Release') {
             steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                archiveArtifacts artifacts: 'dist_electron/**',
+                                 fingerprint: true
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Installer') {
             steps {
                 bat '''
                     if exist "%DEPLOY_DIR%" rmdir /s /q "%DEPLOY_DIR%"
                     mkdir "%DEPLOY_DIR%"
-                    xcopy "dist\\*" "%DEPLOY_DIR%\\" /E /I /Y
+
+                    xcopy "dist_electron\\*" "%DEPLOY_DIR%\\" /E /I /Y
                 '''
             }
         }
@@ -56,6 +58,7 @@ stage('Build Information') {
     post {
         success {
             echo 'CI/CD pipeline completed successfully!'
+            echo 'Electron release artifact created successfully!'
         }
 
         failure {
