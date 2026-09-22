@@ -42,6 +42,34 @@ app.whenReady().then(() => {
     }
   });
 
+  ipcMain.handle('download-update', async () => {
+    try {
+      await autoUpdater.downloadUpdate();
+      return { success: true };
+    } catch (error) {
+      console.error('Download update failed', error);
+      throw error;
+    }
+  });
+
+  ipcMain.handle('install-update', () => {
+    autoUpdater.quitAndInstall();
+  });
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    const windows = BrowserWindow.getAllWindows();
+    if (windows.length > 0) {
+      windows[0].webContents.send('update-progress', progressObj);
+    }
+  });
+
+  autoUpdater.on('update-downloaded', (info) => {
+    const windows = BrowserWindow.getAllWindows();
+    if (windows.length > 0) {
+      windows[0].webContents.send('update-downloaded', info);
+    }
+  });
+
   createWindow();
 
   app.on('activate', () => {
