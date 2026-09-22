@@ -8,13 +8,15 @@ pipeline {
 
     stages {
 
-        stage('Build Information') {
-            steps {
-                echo "Application: ${APP_NAME}"
-                echo "Jenkins Build Number: ${BUILD_NUMBER}"
-                echo "Git Commit: ${GIT_COMMIT}"
-            }
-        }
+stage('Build Information') {
+    steps {
+        bat 'call npm pkg get version'
+        echo "Application: ${APP_NAME}"
+        echo "Environment: ${params.ENVIRONMENT}"
+        echo "Jenkins Build Number: ${BUILD_NUMBER}"
+        echo "Git Commit: ${GIT_COMMIT}"
+    }
+}
 
         stage('Install Dependencies') {
             steps {
