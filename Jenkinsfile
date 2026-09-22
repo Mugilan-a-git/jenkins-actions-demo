@@ -106,11 +106,7 @@ pipeline {
                         for /F "delims=" %%V in ('npm pkg get version') do set "APP_VERSION=%%~V"
                         set "APP_VERSION=%APP_VERSION:"=%"
                         set "RELEASE_TAG=v%APP_VERSION%"
-                        curl -s -X POST -H "Authorization: token %GH_TOKEN%" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Mugilan-a-git/jenkins-actions-demo/releases -d "{\\"tag_name\\":\\"%RELEASE_TAG%\\",\\"name\\":\\"%RELEASE_TAG%\\",\\"draft\\":false,\\"prerelease\\":false}"
-                        rename .git .git_backup
-                        set GITHUB_ACTIONS=true
-                        call npx electron-builder --publish always
-                        rename .git_backup .git
+                        node scripts/publish-release.js
                     '''
                 }
             }

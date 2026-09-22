@@ -29,8 +29,6 @@
     "publish": [
       {
         "provider": "github",
-        "owner": "Mugilan-a-git",
-        "repo": "jenkins-actions-demo",
         "releaseType": "release"
       }
     ]
