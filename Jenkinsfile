@@ -66,7 +66,7 @@ pipeline {
         stage('Build React + Electron') {
             steps {
                 bat '''
-                    if exist "dist_electron" (
+                    if exist "dist_electron\\*" (
                         echo Cleaning previous Electron build...
                         rmdir /s /q "dist_electron"
                     )
