@@ -2,7 +2,12 @@ pipeline {
     agent any
 
     stages {
-
+stage('Build Information') {
+    steps {
+        echo "Jenkins Build Number: ${BUILD_NUMBER}"
+        echo "Git Commit: ${GIT_COMMIT}"
+    }
+}
         stage('Install Dependencies') {
             steps {
                 bat 'call npm install'
