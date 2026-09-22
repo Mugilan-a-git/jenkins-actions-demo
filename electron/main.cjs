@@ -1,5 +1,8 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const { autoUpdater } = require('electron-updater');
+
+autoUpdater.autoDownload = false;
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -23,6 +26,22 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  ipcMain.handle('get-app-version', () => app.getVersion());
+  
+  ipcMain.handle('check-for-updates', async () => {
+    if (isDev) {
+      // Mock response for development mode
+      return { updateInfo: { version: '1.0.1-mock' } };
+    }
+    try {
+      const result = await autoUpdater.checkForUpdates();
+      return result;
+    } catch (error) {
+      console.error('Update check failed', error);
+      throw error;
+    }
+  });
+
   createWindow();
 
   app.on('activate', () => {
