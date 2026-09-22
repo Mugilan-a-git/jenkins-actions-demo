@@ -1,7 +1,7 @@
 {
   "name": "jenkins",
   "private": true,
-  "version": "2.0.2",
+  "version": "2.0.3",
   "repository": "https://github.com/Mugilan-a-git/jenkins-actions-demo",
   "type": "module",
   "main": "electron/main.cjs",
