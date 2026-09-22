@@ -9,7 +9,7 @@
     "dev:electron": "cross-env NODE_ENV=development electron .",
     "dev": "concurrently -k \"npm run dev:vite\" \"wait-on http://localhost:5173 && npm run dev:electron\"",
     "build:vite": "vite build",
-    "build:electron": "electron-builder",
+    "build:electron": "electron-builder --publish never",
     "build": "npm run build:vite && npm run build:electron",
     "lint": "oxlint",
     "preview": "vite preview",
