@@ -65,7 +65,14 @@ pipeline {
 
         stage('Build React + Electron') {
             steps {
-                bat 'call npm run build'
+                bat '''
+                    if exist "dist_electron" (
+                        echo Cleaning previous Electron build...
+                        rmdir /s /q "dist_electron"
+                    )
+
+                    call npm run build
+                '''
             }
         }
 
