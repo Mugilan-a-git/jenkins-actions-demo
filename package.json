@@ -26,6 +26,12 @@
       "dist/**/*",
       "electron/**/*",
       "package.json"
+    ],
+    "publish": [
+      {
+        "provider": "github",
+        "releaseType": "release"
+      }
     ]
   },
   "dependencies": {
