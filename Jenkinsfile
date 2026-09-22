@@ -53,12 +53,25 @@ pipeline {
                 '''
             }
         }
+
+        stage('Publish GitHub Release') {
+            steps {
+                withCredentials([
+                    string(
+                        credentialsId: 'github-release-token',
+                        variable: 'GH_TOKEN'
+                    )
+                ]) {
+                    bat 'call npx electron-builder --publish always'
+                }
+            }
+        }
     }
 
     post {
         success {
             echo 'CI/CD pipeline completed successfully!'
-            echo 'Electron release artifact created successfully!'
+            echo 'Electron release published to GitHub!'
         }
 
         failure {
