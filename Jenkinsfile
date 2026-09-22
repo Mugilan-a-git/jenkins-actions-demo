@@ -102,7 +102,11 @@ pipeline {
                         variable: 'GH_TOKEN'
                     )
                 ]) {
-                    bat 'call npx electron-builder --publish always'
+                    bat '''
+                        set EP_DRAFT=false
+                        set EP_PRE_RELEASE=false
+                        call npx electron-builder --publish always
+                    '''
                 }
             }
         }
