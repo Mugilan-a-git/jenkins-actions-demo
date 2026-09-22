@@ -58,7 +58,9 @@ async function uploadRelease() {
   console.log('Files to upload:', toUpload);
 
   for (const file of toUpload) {
-    console.log(`Uploading ${file}...`);
+    // electron-builder replaces spaces with hyphens when generating latest.yml path
+    const uploadName = file.replace(/ /g, '-');
+    console.log(`Uploading ${file} as ${uploadName}...`);
     const filePath = path.join(distDir, file);
     const stat = fs.statSync(filePath);
     
@@ -69,7 +71,7 @@ async function uploadRelease() {
 
     const fileStream = fs.createReadStream(filePath);
     
-    const response = await fetch(`${uploadUrl}?name=${file}`, {
+    const response = await fetch(`${uploadUrl}?name=${uploadName}`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${TOKEN}`,
