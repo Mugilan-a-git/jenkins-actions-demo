@@ -39,7 +39,7 @@ function App() {
   return (
     <div className="app-container">
       <div className="card">
-        <h1>Hello Jenkins 2.0</h1>
+        <h1>Hello Jenkins 2.0.2</h1>
         <p>Jenkins CI/CD Demo</p>
         
         {version && (
