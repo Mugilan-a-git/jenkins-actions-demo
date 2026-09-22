@@ -18,6 +18,50 @@ pipeline {
             }
         }
 
+        stage('Create Release Tag') {
+            steps {
+                script {
+                    def version = bat(
+                        script: 'call npm pkg get version',
+                        returnStdout: true
+                    ).trim()
+
+                    // npm pkg get version returns something like:
+                    // "2.0.0"
+                    version = version.replaceAll('"', '').trim()
+
+                    env.APP_VERSION = version
+                    env.RELEASE_TAG = "v${version}"
+
+                    echo "Application Version: ${env.APP_VERSION}"
+                    echo "Release Tag: ${env.RELEASE_TAG}"
+                }
+
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'github-mugilan-ssh',
+                        keyFileVariable: 'SSH_KEY'
+                    )
+                ]) {
+                    bat '''
+                        set GIT_SSH_COMMAND=ssh -i "%SSH_KEY%" -o StrictHostKeyChecking=no
+
+                        git fetch --tags origin
+
+                        git rev-parse "%RELEASE_TAG%" >nul 2>&1
+
+                        if errorlevel 1 (
+                            echo Creating tag %RELEASE_TAG%
+                            git tag %RELEASE_TAG%
+                            git push origin %RELEASE_TAG%
+                        ) else (
+                            echo Tag %RELEASE_TAG% already exists. Skipping tag creation.
+                        )
+                    '''
+                }
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
                 bat 'call npm install'
@@ -71,7 +115,7 @@ pipeline {
     post {
         success {
             echo 'CI/CD pipeline completed successfully!'
-            echo 'Electron release published to GitHub!'
+            echo "GitHub Release ${env.APP_VERSION} published successfully!"
         }
 
         failure {
