@@ -24,9 +24,8 @@ async function uploadRelease() {
   console.log('Files to upload:', toUpload);
 
   for (const file of toUpload) {
-    // electron-builder replaces spaces with hyphens when generating latest.yml path
-    const uploadName = file.replace(/ /g, '-');
-    console.log(`Uploading ${file} as ${uploadName}...`);
+    const uploadName = encodeURIComponent(file);
+    console.log(`Uploading ${file}...`);
     const filePath = path.join(distDir, file);
     const stat = fs.statSync(filePath);
     

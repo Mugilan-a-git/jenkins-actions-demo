@@ -1,7 +1,7 @@
 {
   "name": "jenkins",
   "private": true,
-  "version": "4.0.0",
+  "version": "5.0.0",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -18,6 +18,7 @@
   "build": {
     "appId": "com.jenkins.app",
     "productName": "Jenkins App",
+    "artifactName": "${name}-Setup-${version}.${ext}",
     "directories": {
       "output": "dist_electron"
     },
