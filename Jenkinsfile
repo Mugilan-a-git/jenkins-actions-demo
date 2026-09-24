@@ -94,12 +94,13 @@ pipeline {
             }
         }
 
-        stage('Publish GitHub Release') {
+        stage('Publish to Nexus') {
             steps {
                 withCredentials([
-                    string(
-                        credentialsId: 'github-release-token',
-                        variable: 'GH_TOKEN'
+                    usernamePassword(
+                        credentialsId: 'nexus-credentials',
+                        usernameVariable: 'NEXUS_USER',
+                        passwordVariable: 'NEXUS_PASS'
                     )
                 ]) {
                     bat '''

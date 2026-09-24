@@ -28,8 +28,8 @@
     ],
     "publish": [
       {
-        "provider": "github",
-        "releaseType": "release"
+        "provider": "generic",
+        "url": "http://localhost:8081/repository/jenkins/"
       }
     ]
   },
